@@ -5,13 +5,22 @@ const ObjectId = require('mongodb').ObjectId
 
 
 
-async function query(filterBy={txt:''}) {
+async function query(filterBy = { txt: '', budget: { minPrice: 1, maxPrice: 10 }, label: '' }, sortBy) {
+    console.log(filterBy);
     try {
-        const criteria = {
-            title: { $regex: filterBy.txt, $options: 'i' }
-        }
+        // const criteria = {
+        //     title: { $regex: filterBy.txt, $options: 'i' }
+        // }
+        const criteria = _buildCriteria(filterBy)
+        console.log('criteriaaaaaa',criteria)
         const collection = await dbService.getCollection('gig')
+        // if (criteria.title){
         var gigs = await collection.find(criteria).toArray()
+        // }
+        // if (criteria.budget){
+        //     var gigs = await collection.find(criteria.price)
+        //     // var gigs = await collection.find({criteria.budget})
+        // }
         // const gigs = collection.find({ buyerId: id }).toArray()
 
         return gigs
@@ -92,24 +101,36 @@ async function removeGigMsg(gigId, msgId) {
     }
 }
 function _buildCriteria(filterBy) {
-    const criteria = {}
-  
-    // by name
-    // const regex = new RegExp(filterBy.name, 'i')
-    // criteria.name = { $regex: regex }
-  
-    // filter by inStock
-    // if (filterBy.inStock) {
-    //   criteria.inStock = { $eq: JSON.parse(filterBy.inStock) }
-    // }
-  
+    var criteria = {}
+
+    // by text
+    criteria.title = { $regex: filterBy.txt, $options: 'i' }
+
+    //by budget
+    filterBy.budget = JSON.parse(filterBy.budget)
+    if (filterBy.budget?.minPrice) {
+        criteria.price = { $gte: filterBy.budget.minPrice, $lte: filterBy.budget.maxPrice }
+    }
+
+    //by delivert time 
+    filterBy.daysToMake = JSON.parse(filterBy.daysToMake)
+    console.log('filterBy.delTime',filterBy.daysToMake)
+    if (filterBy.daysToMake) {
+        criteria.daysToMake = { $lte: filterBy.daysToMake }
+    }
+
     // filter by labels
+    // filterBy.label = JSON.parse(filterBy.label)
+    if (filterBy.label){
+        console.log('filterBy.labeleeeee',filterBy.label)
+            criteria.labels = { $in: [filterBy.label] }
+    }
+    // console.log('filterBy.labels',filterBy.labels)
     // if (filterBy.labels?.length) {
-    //   criteria.labels = { $in: filterBy.labels }
     // }
-    // return criteria
-  
-  }
+    return criteria
+
+}
   
 
 module.exports = {

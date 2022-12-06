@@ -6,7 +6,11 @@ async function getGigs(req, res) {
   try {
     logger.debug('Getting Gigs')
     const filterBy = {
-      txt: req.query.txt || ''
+      txt: req.query.txt || '',
+      budget: req.query.budget || 0,
+      label: req.query.label || '',
+      daysToMake: req.query.delTime || 0,
+      
     }
     const gigs = await gigService.query(filterBy)
     res.json(gigs)
