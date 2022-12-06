@@ -57,7 +57,7 @@ async function add(gig) {
 async function update(gig) {
     try {
         const gigToSave = {
-            vendor: gig.vendor,
+            // vendor: gig.vendor,
             price: gig.price
         }
         const collection = await dbService.getCollection('gig')

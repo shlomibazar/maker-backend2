@@ -28,11 +28,11 @@ async function getGigById(req, res) {
 }
 
 async function addGig(req, res) {
-  const {loggedinUser} = req
+  // const {loggedinUser} = req
 
   try {
     const gig = req.body
-    gig.owner = loggedinUser
+    // gig.owner = loggedinUser
     const addedGig = await gigService.add(gig)
     res.json(addedGig)
   } catch (err) {
