@@ -43,6 +43,7 @@ async function remove(orderId) {
 
 async function add(order) {
     try {
+        console.log('order adddd',order)
         const collection = await dbService.getCollection('order')
         await collection.insertOne(order)
         return order
@@ -52,11 +53,12 @@ async function add(order) {
     }
 }
 
+
 async function update(order) {
     try {
+        console.log('order update',order)
         const orderToSave = {
-            vendor: order.vendor,
-            price: order.price
+            status: order.status,
         }
         const collection = await dbService.getCollection('order')
         await collection.updateOne({ _id: ObjectId(order._id) }, { $set: orderToSave })

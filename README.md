@@ -1,1 +1,1 @@
-Coding Academy - production ready server 
+Shlomi Academy - production ready server 
