@@ -45,7 +45,9 @@ async function add(order) {
     try {
         console.log('order adddd',order)
         const collection = await dbService.getCollection('order')
+        // await collection.insertOne(order)
         await collection.insertOne(order)
+
         return order
     } catch (err) {
         logger.error('cannot insert order', err)

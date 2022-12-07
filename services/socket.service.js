@@ -29,6 +29,10 @@ function setupSocketAPI(http) {
             // emits only to sockets in the same room
             gIo.to(socket.myTopic).emit('chat-add-msg', msg)
         })
+
+        socket.on('editOrder', order => {
+            broadcast({type:'send to seller', data:order,userId:socket.userId})
+        })
         socket.on('user-watch', userId => {
             logger.info(`user-watch from socket [id: ${socket.id}], on user ${userId}`)
             socket.join('watching:' + userId)
@@ -47,12 +51,12 @@ function setupSocketAPI(http) {
 }
 
 function emitTo({ type, data, label }) {
-    if (label) gIo.to('watching:' + label.toString()).emit(type, data)
+    if (label) gIo.to('watching:' + label).emit(type, data)
     else gIo.emit(type, data)
 }
 
 async function emitToUser({ type, data, userId }) {
-    userId = userId.toString()
+    userId = userId
     const socket = await _getUserSocket(userId)
 
     if (socket) {
@@ -67,7 +71,7 @@ async function emitToUser({ type, data, userId }) {
 // If possible, send to all sockets BUT not the current socket 
 // Optionally, broadcast to a room / to all
 async function broadcast({ type, data, room = null, userId }) {
-    userId = userId.toString()
+    userId = userId
     
     logger.info(`Broadcasting event: ${type}`)
     const excludedSocket = await _getUserSocket(userId)
