@@ -33,6 +33,11 @@ function setupSocketAPI(http) {
         socket.on('editOrder', order => {
             broadcast({type:'send to seller', data:order,userId:socket.userId})
         })
+
+        socket.on('user ordered', (msg) => {
+            broadcast({type:'a new order', data:msg,userId:socket.userId})
+        })
+
         socket.on('user-watch', userId => {
             logger.info(`user-watch from socket [id: ${socket.id}], on user ${userId}`)
             socket.join('watching:' + userId)
